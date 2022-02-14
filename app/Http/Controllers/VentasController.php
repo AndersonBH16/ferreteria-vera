@@ -4,83 +4,61 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreVentasRequest;
 use App\Http\Requests\UpdateVentasRequest;
+use App\Models\Cliente;
 use App\Models\Ventas;
 
 class VentasController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index()
     {
-        //
+        $listaVentas = Ventas::all();
+        return view('inventario.ventas.ventas', compact('listaVentas'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function create()
     {
-        //
+        $clientes = Cliente::all();
+        return view('inventario.ventas.crear_venta', compact('clientes'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \App\Http\Requests\StoreVentasRequest  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(StoreVentasRequest $request)
     {
-        //
+        $ventas = Ventas::saved($request->all());
+
+        foreach ($request->producto_id as $key => $item){
+            $resulados[] = array(
+                "producto_id" => $request->producto_id[$key],
+                "cantidad"    => $request->cantidad[$key],
+                "precio"      => $request->precio[$key],
+                "descuento"   => $request->descuento[$key]
+            );
+
+            $ventas->detalleVentas()->createMany($resulados);
+        }
+
+        return redirect()->route('ventas');
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Ventas  $ventas
-     * @return \Illuminate\Http\Response
-     */
     public function show(Ventas $ventas)
     {
-        //
+        return view('inventario.ventas.mostrar_ventas', compact('ventas'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Ventas  $ventas
-     * @return \Illuminate\Http\Response
-     */
     public function edit(Ventas $ventas)
     {
-        //
+        $clientes = Cliente::all();
+        return view('inventario.ventas.mostrar_ventas', compact('ventas'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \App\Http\Requests\UpdateVentasRequest  $request
-     * @param  \App\Models\Ventas  $ventas
-     * @return \Illuminate\Http\Response
-     */
     public function update(UpdateVentasRequest $request, Ventas $ventas)
     {
-        //
+        $ventas->update($request->all());
+        return redirect()->route('ventas');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Ventas  $ventas
-     * @return \Illuminate\Http\Response
-     */
     public function destroy(Ventas $ventas)
     {
-        //
+        $ventas->delete();
+        return redirect()->route('ventas');
     }
 }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreComprasRequest;
 use App\Http\Requests\UpdateComprasRequest;
 use App\Models\Compras;
+use App\Models\Proveedor;
 
 class ComprasController extends Controller
 {
@@ -16,7 +17,8 @@ class ComprasController extends Controller
 
     public function create()
     {
-        return view('inventario.compras.crear_compra');
+        $proveedores = Proveedor::all();
+        return view('inventario.compras.crear_compra', compact('proveedores'));
     }
 
     public function store(StoreComprasRequest $request)
@@ -43,6 +45,7 @@ class ComprasController extends Controller
 
     public function edit(Compras $compras)
     {
+        $proveedores = Proveedor::all();
         return view('inventario.compras.mostrar_compras', compact('compras'));
     }
 

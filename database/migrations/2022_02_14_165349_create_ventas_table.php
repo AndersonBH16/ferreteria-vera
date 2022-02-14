@@ -15,6 +15,15 @@ class CreateVentasTable extends Migration
     {
         Schema::create('ventas', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('cliente_id');
+            $table->foreign('cliente_id')->references('id')->on('clientes');
+            $table->unsignedBigInteger('user_id');
+            $table->foreign('user_id')->references('id')->on('users');
+            $table->dateTime('fecha_venta');
+            $table->decimal('igv');
+            $table->decimal('total');
+            $table->enum('estado', ['VALIDO','CANCELADO'])->default('VALIDO');
+            $table->string('imagen');
             $table->timestamps();
         });
     }
